@@ -1,4 +1,4 @@
-This tool is a script that lets you mass edit a single knob of multiple nodes.
+This tool is a script that lets you mass edit a single knob of multiple nodes. It can either be by selection or by class.
 
 There are 3 modes:
 
@@ -10,4 +10,11 @@ There are 3 modes:
 Works on almost all knobs including labels and disable.
 Expressions also work, if you put an = sign before the expression.
 
+The hotkey I have included in the menu.py file maps it to shift+m, but feel free to change that to whatever you prefer.
+
+
+
 Please e-mail gmurcho@gmail.com for any questions, issues or feedback!
+
+Thanks,
+Gautama Murcho
