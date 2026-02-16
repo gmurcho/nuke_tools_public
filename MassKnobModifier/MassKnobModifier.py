@@ -72,6 +72,45 @@ def _parse_value(value_str):
     return v
 
 
+def _coerce_for_knob(knob, parsed):
+    """
+    Coerce a parsed value to what this specific knob expects.
+
+    Fixes cases like Read 'frame' when in expression mode:
+      - knob is effectively string-backed, so setValue(1) errors
+      - but setValue("1") is valid
+    Also helps enumeration knobs:
+      - allow user to type 'hold' or 'start at' instead of an index.
+    """
+    # 1) String knobs must receive strings
+    try:
+        if isinstance(knob, nuke.String_Knob):
+            if isinstance(parsed, list):
+                return ", ".join(str(x) for x in parsed)
+            return str(parsed)
+    except Exception:
+        pass
+
+    # 2) Enumeration knobs: allow label input (e.g. "hold", "start at")
+    try:
+        if isinstance(knob, nuke.Enumeration_Knob) and isinstance(parsed, str):
+            opts = list(knob.values())
+
+            # exact match
+            if parsed in opts:
+                return opts.index(parsed)
+
+            # case-insensitive match
+            low = parsed.lower()
+            for i, o in enumerate(opts):
+                if str(o).lower() == low:
+                    return i
+    except Exception:
+        pass
+
+    return parsed
+
+
 def _set_knob_value_or_expression(knob, raw_value_str):
     if raw_value_str is None:
         raise ValueError("Empty value.")
@@ -79,6 +118,7 @@ def _set_knob_value_or_expression(knob, raw_value_str):
     if s == "":
         raise ValueError("Empty value.")
 
+    # Expressions: user types "=<expr>"
     if s.startswith("="):
         expr = s[1:].strip()
         if expr == "":
@@ -101,7 +141,9 @@ def _set_knob_value_or_expression(knob, raw_value_str):
 
         return "expression"
 
+    # Normal values
     parsed = _parse_value(s)
+    parsed = _coerce_for_knob(knob, parsed)
 
     if isinstance(parsed, list):
         for i, val in enumerate(parsed):
@@ -400,4 +442,4 @@ def mass_knob_modifier():
 
 
 # Don't auto-run on import if this lives in menu.py / startup:
-#mass_knob_modifier()
+mass_knob_modifier()
