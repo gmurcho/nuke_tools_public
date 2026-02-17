@@ -442,4 +442,4 @@ def mass_knob_modifier():
 
 
 # Don't auto-run on import if this lives in menu.py / startup:
-mass_knob_modifier()
+#mass_knob_modifier()
