@@ -145,6 +145,19 @@ def _set_knob_value_or_expression(knob, raw_value_str):
     parsed = _parse_value(s)
     parsed = _coerce_for_knob(knob, parsed)
 
+    # Special behavior for label knob: append instead of overwrite
+    try:
+        if knob.name() == "label" and not s.startswith("="):
+            existing = knob.value()
+            new_text = str(parsed)
+
+            if existing and existing.strip():
+                parsed = existing.rstrip() + "\n" + new_text
+            else:
+                parsed = new_text
+    except Exception:
+        pass
+
     if isinstance(parsed, list):
         for i, val in enumerate(parsed):
             try:
