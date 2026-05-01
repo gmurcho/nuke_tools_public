@@ -2,14 +2,14 @@ set cut_paste_input [stack 0]
 version 15.1 v5
 push $cut_paste_input
 Group {
- name gBokeh_
+ name gBokeh
  knobChanged "\nimport nuke\n\ndef find_node(name, node_class=None):\n    nodes = nuke.allNodes(node_class) if node_class else nuke.allNodes()\n    for x in nodes:\n        if x.name() == name:\n            return x\n    return None\n\n\ndef sync_optional_inputs():\n    g = nuke.thisNode()\n\n    inputs = \[\n        # knob            input       number  first node      switch             output node\n        (\"texture_type1\", \"texture2\", 0,      \"texture2_IN\",  \"texture2_switch\", \"texture2_OUT\"),\n        (\"texture_type2\", \"texture3\", 1,      \"texture3_IN\",  \"texture3_switch\", \"texture3_OUT\"),\n    ]\n\n    g.begin()\n    try:\n        for knob_name, input_name, input_number, first_name, switch_name, out_name in inputs:\n            wants_input = g\[knob_name].value() == \"new input\"\n\n            inp = find_node(input_name, \"Input\")\n            first_node = find_node(first_name)\n            sw = find_node(switch_name)\n            out_node = find_node(out_name)\n\n            if wants_input:\n                if inp is None:\n                    # Important: avoids Nuke auto-connecting it to selected nodes\n                    inp = nuke.nodes.Input(name=input_name)\n                    inp\[\"number\"].setValue(input_number)\n\n                if first_node is not None:\n                    first_node.setInput(0, inp)\n\n                if sw is not None and out_node is not None:\n                    sw.setInput(1, out_node)\n                    sw\[\"which\"].setValue(1)\n\n            else:\n                if sw is not None:\n                    sw\[\"which\"].setValue(0)\n                    sw.setInput(1, None)\n\n                if first_node is not None:\n                    first_node.setInput(0, None)\n\n                if inp is not None:\n                    nuke.delete(inp)\n\n    finally:\n        g.end()\n\n\nk = nuke.thisKnob()\nif k and k.name() in (\"texture_type1\", \"texture_type2\"):\n    sync_optional_inputs()\n"
  tile_color 0x153147ff
  label "\[python \{nuke.thisNode().input(0) and \"shape: custom\" or \"shape: \" + nuke.thisNode()\[\"shape\"].value()\}]"
  note_font_color 0x100000ff
  selected true
- xpos -3972
- ypos -54
+ xpos -3556
+ ypos -286
  show_group_view true
  addUserKnob {20 User}
  addUserKnob {26 ""}
@@ -301,7 +301,7 @@ Group {
   xpos -480
   ypos -4621
  }
-set N26c9b110 [stack 0]
+set N3789e5b0 [stack 0]
  Roto {
   cliptype none
   curves {{{v x3f99999a}
@@ -455,7 +455,7 @@ set N26c9b110 [stack 0]
   xpos -194
   ypos -4588
  }
-push $N26c9b110
+push $N3789e5b0
  Roto {
   cliptype none
   curves {{{v x3f99999a}
@@ -540,7 +540,7 @@ push $N26c9b110
   xpos -347
   ypos -4584
  }
-push $N26c9b110
+push $N3789e5b0
  Roto {
   cliptype none
   curves {{{v x3f99999a}
@@ -706,7 +706,7 @@ push $N26c9b110
   xpos -446
   ypos -4130
  }
-set N2770edc0 [stack 0]
+set N37c74570 [stack 0]
  Dot {
   name Dot21
   xpos -2778
@@ -717,7 +717,7 @@ set N2770edc0 [stack 0]
   xpos -2778
   ypos -4130
  }
-set N2771a490 [stack 0]
+set N37c7fc40 [stack 0]
  Dot {
   name Dot22
   xpos -4873
@@ -734,13 +734,13 @@ set N2771a490 [stack 0]
   xpos -4865
   ypos -3588
  }
-set N27725d30 [stack 0]
+set N37c966f0 [stack 0]
  Dot {
   name Dot16
   xpos -5176
   ypos -3588
  }
-set N2772b9c0 [stack 0]
+set N37c9c290 [stack 0]
  Expression {
   temp_name0 h
   temp_expr0 r>.1?1:0
@@ -770,7 +770,7 @@ set N2772b9c0 [stack 0]
   xpos -5286
   ypos -3414
  }
-push $N2772b9c0
+push $N37c9c290
  Merge2 {
   inputs 2
   operation stencil
@@ -809,7 +809,7 @@ push $N2772b9c0
   xpos -5176
   ypos -3130
  }
-push $N27725d30
+push $N37c966f0
  Merge2 {
   inputs 2
   operation plus
@@ -930,7 +930,7 @@ push $N27725d30
   xpos -2995
   ypos -2698
  }
-push $N2771a490
+push $N37c7fc40
  Switch {
   name texture2_switch
   label "which: \[value which]"
@@ -942,13 +942,13 @@ push $N2771a490
   xpos -2772
   ypos -3570
  }
-set N27b17240 [stack 0]
+set N37dffc50 [stack 0]
  Dot {
   name Dot3
   xpos -3083
   ypos -3570
  }
-set N27b1ce10 [stack 0]
+set N37e057f0 [stack 0]
  Expression {
   temp_name0 h
   temp_expr0 r>.1?1:0
@@ -978,7 +978,7 @@ set N27b1ce10 [stack 0]
   xpos -3193
   ypos -3396
  }
-push $N27b1ce10
+push $N37e057f0
  Merge2 {
   inputs 2
   operation stencil
@@ -1017,7 +1017,7 @@ push $N27b1ce10
   xpos -3083
   ypos -3112
  }
-push $N27b17240
+push $N37dffc50
  Merge2 {
   inputs 2
   operation plus
@@ -1138,19 +1138,19 @@ push $N27b17240
   xpos -663
   ypos -2758
  }
-push $N2770edc0
+push $N37c74570
  Dot {
   name Dot27
   xpos -443
   ypos -3506
  }
-set N27c7b670 [stack 0]
+set N37f61650 [stack 0]
  Dot {
   name Dot28
   xpos -754
   ypos -3506
  }
-set N27c827f0 [stack 0]
+set N37f67260 [stack 0]
  Expression {
   temp_name0 h
   temp_expr0 r>.1?1:0
@@ -1180,7 +1180,7 @@ set N27c827f0 [stack 0]
   xpos -864
   ypos -3332
  }
-push $N27c827f0
+push $N37f67260
  Merge2 {
   inputs 2
   operation stencil
@@ -1219,7 +1219,7 @@ push $N27c827f0
   xpos -754
   ypos -3048
  }
-push $N27c7b670
+push $N37f61650
  Merge2 {
   inputs 2
   operation plus
@@ -1229,7 +1229,7 @@ push $N27c7b670
   xpos -480
   ypos -3069
  }
-set N27cf94a0 [stack 0]
+set N37fddb60 [stack 0]
  Crop {
   box {0 0 1024 1024}
   name Crop4
@@ -1305,7 +1305,7 @@ set N27cf94a0 [stack 0]
   xpos 434
   ypos -1735
  }
-set N27d886d0 [stack 0]
+set N3806c9d0 [stack 0]
  Dot {
   name Dot37
   xpos 468
@@ -1384,13 +1384,13 @@ set N27d886d0 [stack 0]
   xpos 468
   ypos 1450
  }
-set N27e22b90 [stack 0]
+set N38106df0 [stack 0]
  Dot {
   name Dot40
   xpos 306
   ypos 1450
  }
-set N27e28820 [stack 0]
+set N3810d290 [stack 0]
  TransformMasked {
   channels {rgba.red -rgba.green -rgba.blue none}
   scale 1.005
@@ -1411,7 +1411,7 @@ set N27e28820 [stack 0]
   xpos -14
   ypos 1590
  }
-push $N27e28820
+push $N3810d290
  TransformMasked {
   channels {-rgba.red -rgba.green rgba.blue none}
   scale 1.01
@@ -1422,7 +1422,7 @@ push $N27e28820
   xpos 144
   ypos 1521
  }
-push $N27e28820
+push $N3810d290
  TransformMasked {
   channels {rgba.red -rgba.green rgba.blue none}
   scale 1.01
@@ -1457,7 +1457,7 @@ push $N27e28820
   xpos 306
   ypos 1685
  }
-push $N27e22b90
+push $N38106df0
  Dissolve {
   inputs 2
   which {{.5*aberr}}
@@ -1539,8 +1539,8 @@ push $N27e22b90
   xpos 297
   ypos 2738
  }
-push $N27d886d0
-push $N27cf94a0
+push $N3806c9d0
+push $N37fddb60
 push 0
  Viewer {
   inputs 3
