@@ -1,15 +1,17 @@
 set cut_paste_input [stack 0]
 version 15.1 v5
+push 0
 push $cut_paste_input
 Group {
+ inputs 2
  name gBokeh
  knobChanged "\nimport nuke\n\ndef find_node(name, node_class=None):\n    nodes = nuke.allNodes(node_class) if node_class else nuke.allNodes()\n    for x in nodes:\n        if x.name() == name:\n            return x\n    return None\n\n\ndef sync_optional_inputs():\n    g = nuke.thisNode()\n\n    inputs = \[\n        # knob            input       number  first node      switch             output node\n        (\"texture_type1\", \"texture2\", 0,      \"texture2_IN\",  \"texture2_switch\", \"texture2_OUT\"),\n        (\"texture_type2\", \"texture3\", 1,      \"texture3_IN\",  \"texture3_switch\", \"texture3_OUT\"),\n    ]\n\n    g.begin()\n    try:\n        for knob_name, input_name, input_number, first_name, switch_name, out_name in inputs:\n            wants_input = g\[knob_name].value() == \"new input\"\n\n            inp = find_node(input_name, \"Input\")\n            first_node = find_node(first_name)\n            sw = find_node(switch_name)\n            out_node = find_node(out_name)\n\n            if wants_input:\n                if inp is None:\n                    # Important: avoids Nuke auto-connecting it to selected nodes\n                    inp = nuke.nodes.Input(name=input_name)\n                    inp\[\"number\"].setValue(input_number)\n\n                if first_node is not None:\n                    first_node.setInput(0, inp)\n\n                if sw is not None and out_node is not None:\n                    sw.setInput(1, out_node)\n                    sw\[\"which\"].setValue(1)\n\n            else:\n                if sw is not None:\n                    sw\[\"which\"].setValue(0)\n                    sw.setInput(1, None)\n\n                if first_node is not None:\n                    first_node.setInput(0, None)\n\n                if inp is not None:\n                    nuke.delete(inp)\n\n    finally:\n        g.end()\n\n\nk = nuke.thisKnob()\nif k and k.name() in (\"texture_type1\", \"texture_type2\"):\n    sync_optional_inputs()\n"
  tile_color 0x153147ff
  label "\[python \{nuke.thisNode().input(0) and \"shape: custom\" or \"shape: \" + nuke.thisNode()\[\"shape\"].value()\}]"
  note_font_color 0x100000ff
  selected true
- xpos -3556
- ypos -286
+ xpos -3523
+ ypos -384
  show_group_view true
  addUserKnob {20 User}
  addUserKnob {26 ""}
@@ -848,6 +850,30 @@ push $N37c966f0
   xpos -4870
   ypos -1725
  }
+ Input {
+  inputs 0
+  name stencil
+  xpos 950
+  ypos -2410
+  number 1
+ }
+ Dot {
+  name Dot38
+  xpos 984
+  ypos -2306
+ }
+set N2f9aa610 [stack 0]
+ Dot {
+  name Dot43
+  xpos 984
+  ypos -2106
+ }
+set N1f6db910 [stack 0]
+ Dot {
+  name Dot44
+  xpos 984
+  ypos -2006
+ }
  Noise {
   inputs 0
   size 10
@@ -856,8 +882,8 @@ push $N37c966f0
   gamma {{.025*amount2}}
   center {2111 1152}
   name Noise12
-  xpos -4034
-  ypos -2165
+  xpos -4007
+  ypos -2610
  }
  Expression {
   temp_name0 h
@@ -868,8 +894,8 @@ push $N37c966f0
   expr2 h
   expr3 h
   name ExpressionH2
-  xpos -4034
-  ypos -2113
+  xpos -4007
+  ypos -2558
  }
  Transform {
   scale 1.1
@@ -877,15 +903,23 @@ push $N37c966f0
   shutteroffset centred
   name Transform22
   label "tran: \[value translate] \n scale: \[value scale]"
-  xpos -4034
-  ypos -2061
+  xpos -4007
+  ypos -2506
  }
  Grade {
   white {{parent.Transform21.scale*1000}}
   name Grade6
   label "mix: \[value mix]"
-  xpos -4027
-  ypos -1903
+  xpos -4000
+  ypos -2348
+ }
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge15
+  label "output: \[value output] \nmix: \[value mix]"
+  xpos -4000
+  ypos -2024
  }
  Convolve2 {
   inputs 2
@@ -1056,6 +1090,7 @@ push $N37dffc50
   xpos -2775
   ypos -1725
  }
+push $N1f6db910
  Noise {
   inputs 0
   size 10
@@ -1094,6 +1129,14 @@ push $N37dffc50
   label "mix: \[value mix]"
   xpos -1932
   ypos -2574
+ }
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge14
+  label "output: \[value output] \nmix: \[value mix]"
+  xpos -1939
+  ypos -2122
  }
  Convolve2 {
   inputs 2
@@ -1259,6 +1302,7 @@ set N37fddb60 [stack 0]
   xpos -443
   ypos -1725
  }
+push $N2f9aa610
  Noise {
   inputs 0
   size 10
@@ -1297,6 +1341,14 @@ set N37fddb60 [stack 0]
   label "mix: \[value mix]"
   xpos 434
   ypos -2634
+ }
+ Merge2 {
+  inputs 2
+  operation stencil
+  name Merge8
+  label "output: \[value output] \nmix: \[value mix]"
+  xpos 434
+  ypos -2322
  }
  Convolve2 {
   inputs 2
