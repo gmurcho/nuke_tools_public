@@ -2,7 +2,7 @@ set cut_paste_input [stack 0]
 version 15.1 v5
 push $cut_paste_input
 Group {
- name gBokeh
+ name gBokeh_
  knobChanged "\nimport nuke\n\ndef find_node(name, node_class=None):\n    nodes = nuke.allNodes(node_class) if node_class else nuke.allNodes()\n    for x in nodes:\n        if x.name() == name:\n            return x\n    return None\n\n\ndef sync_optional_inputs():\n    g = nuke.thisNode()\n\n    inputs = \[\n        # knob            input       number  first node      switch             output node\n        (\"texture_type1\", \"texture2\", 0,      \"texture2_IN\",  \"texture2_switch\", \"texture2_OUT\"),\n        (\"texture_type2\", \"texture3\", 1,      \"texture3_IN\",  \"texture3_switch\", \"texture3_OUT\"),\n    ]\n\n    g.begin()\n    try:\n        for knob_name, input_name, input_number, first_name, switch_name, out_name in inputs:\n            wants_input = g\[knob_name].value() == \"new input\"\n\n            inp = find_node(input_name, \"Input\")\n            first_node = find_node(first_name)\n            sw = find_node(switch_name)\n            out_node = find_node(out_name)\n\n            if wants_input:\n                if inp is None:\n                    # Important: avoids Nuke auto-connecting it to selected nodes\n                    inp = nuke.nodes.Input(name=input_name)\n                    inp\[\"number\"].setValue(input_number)\n\n                if first_node is not None:\n                    first_node.setInput(0, inp)\n\n                if sw is not None and out_node is not None:\n                    sw.setInput(1, out_node)\n                    sw\[\"which\"].setValue(1)\n\n            else:\n                if sw is not None:\n                    sw\[\"which\"].setValue(0)\n                    sw.setInput(1, None)\n\n                if first_node is not None:\n                    first_node.setInput(0, None)\n\n                if inp is not None:\n                    nuke.delete(inp)\n\n    finally:\n        g.end()\n\n\nk = nuke.thisKnob()\nif k and k.name() in (\"texture_type1\", \"texture_type2\"):\n    sync_optional_inputs()\n"
  tile_color 0x153147ff
  label "\[python \{nuke.thisNode().input(0) and \"shape: custom\" or \"shape: \" + nuke.thisNode()\[\"shape\"].value()\}]"
@@ -18,7 +18,6 @@ Group {
  addUserKnob {26 overall l "" +STARTLINE T "< font . color=#fbdabd>overall"}
  addUserKnob {7 seed R -10 10}
  addUserKnob {4 shape M {circular hexagonal octagonal}}
- shape octagonal
  addUserKnob {6 anamorphic -STARTLINE}
  addUserKnob {6 catEyeCB l "cat eye" -STARTLINE}
  addUserKnob {26 note1 l "" +STARTLINE T "< font . color = #888888>      *a custom input will override the shape."}
